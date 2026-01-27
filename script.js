@@ -19,11 +19,14 @@ const addAlarmBtn = document.getElementById('add-alarm-btn');
 const alarmHourInput = document.getElementById('alarm-hour');
 const alarmMinuteInput = document.getElementById('alarm-minute');
 const alarmList = document.getElementById('alarm-list');
+const clockContainer = document.querySelector('.clock-container');
 
 const weekdayNames = ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'];
 
 let lastAlertTime = null;
 let alarmTimes = [];
+let tapCount = 0;
+let tapTimeout = null;
 
 // LocalStorage から時報設定を読み込む
 function loadAlarmTimes() {
@@ -204,3 +207,38 @@ if (fullscreenBtn) {
         fullscreenBtn.textContent = document.fullscreenElement ? '全画面解除' : '全画面';
     });
 }
+
+// 時計をクリックで全画面表示を切り替え
+if (clockContainer) {
+    clockContainer.addEventListener('click', toggleFullscreen);
+}
+
+// 画面を3回タップで設定パネルを表示
+document.addEventListener('click', (e) => {
+    // 設定パネルやボタン自体へのクリックは除外
+    if (e.target.closest('.settings-btn') || e.target.closest('.settings-panel')) {
+        return;
+    }
+
+    tapCount++;
+
+    // タップ検出ウィンドウをリセット
+    clearTimeout(tapTimeout);
+    tapTimeout = setTimeout(() => {
+        tapCount = 0;
+    }, 1000); // 1秒以内のクリックを対象
+
+    // 3回タップで設定パネルを表示
+    if (tapCount === 3) {
+        settingsPanel.classList.remove('hidden');
+        tapCount = 0;
+        clearTimeout(tapTimeout);
+    }
+});
+
+// 設定パネルが表示されたらタップカウントをリセット
+settingsPanel.addEventListener('click', (e) => {
+    if (!e.target.closest('.settings-content')) {
+        tapCount = 0;
+    }
+});
