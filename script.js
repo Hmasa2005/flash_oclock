@@ -20,6 +20,7 @@ const alarmHourInput = document.getElementById('alarm-hour');
 const alarmMinuteInput = document.getElementById('alarm-minute');
 const alarmList = document.getElementById('alarm-list');
 const clockContainer = document.querySelector('.clock-container');
+const testSoundBtn = document.getElementById('test-sound-btn');
 
 const weekdayNames = ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'];
 
@@ -182,6 +183,14 @@ settingsPanel.addEventListener('click', (e) => {
 
 // 時報を追加するボタン
 addAlarmBtn.addEventListener('click', addAlarm);
+
+// 音声テストボタン
+testSoundBtn.addEventListener('click', () => {
+    alertSound.currentTime = 0;
+    alertSound.play().catch(() => {
+        alert('音声再生に失敗しました。alert.mp3がtemplatesフォルダに存在することを確認してください。');
+    });
+});
 
 // Enter キーで追加
 alarmHourInput.addEventListener('keypress', (e) => {
